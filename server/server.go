@@ -95,7 +95,11 @@ func Ps(w http.ResponseWriter, r *http.Request) {
 			w.Write(Msg(err.Error()))
 			return
 		}
-		statuses = append(statuses, CtrStatus{Name: svc.Name, Status: ctr.State.Status})
+		if ctr.State == nil {
+			statuses = append(statuses, CtrStatus{Name: svc.Name, Status: "unknown"})
+		} else {
+			statuses = append(statuses, CtrStatus{Name: svc.Name, Status: ctr.State.Status})
+		}
 	}
 	psResp := PsResp{Projects: projs, Services: svcs, Volumes: vols, Statuses: statuses}
 	b, err := json.Marshal(psResp)
