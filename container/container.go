@@ -10,6 +10,7 @@ import (
 	"github.com/compose-spec/compose-go/v2/cli"
 	"github.com/compose-spec/compose-go/v2/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/api/types/network"
 	dcr "github.com/docker/docker/client"
 	"github.com/pgulb/plasma/db"
@@ -91,6 +92,18 @@ func Get(name string) (*container.InspectResponse, error) {
 
 func Run(svc *db.Service) error {
 	ctx := context.Background()
+	imgPresent, err := imagePresent(svc)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	if !imgPresent {
+		err := imageImport(svc)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+	}
 	created, err := Docker.ContainerCreate(
 		ctx,
 		&container.Config{Image: svc.Image},
@@ -109,6 +122,54 @@ func Run(svc *db.Service) error {
 		return err
 	}
 	return nil
+}
+
+func imageImport(svc *db.Service) error {
+	ctx := context.Background()
+	log.Println("Pulling image", svc.Image)
+	closer, err := Docker.ImagePull(ctx, svc.Image, image.PullOptions{})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	defer closer.Close()
+	importCloser, err := Docker.ImageImport(
+		ctx,
+		image.ImportSource{
+			SourceName: "-",
+			Source:     closer,
+		},
+		svc.Image,
+		image.ImportOptions{},
+	)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	defer importCloser.Close()
+	var body []byte
+	_, err = importCloser.Read(body)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	log.Println(string(body))
+	return nil
+}
+
+func imagePresent(svc *db.Service) (bool, error) {
+	ctx := context.Background()
+	images, err := Docker.ImageList(ctx, image.ListOptions{})
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+	for _, img := range images {
+		if slices.Contains(img.RepoTags, svc.Image) {
+			return true, nil
+		}
+	}
+	return false, nil
 }
 
 func IsPresentAliveAndHealthy(
