@@ -1,10 +1,18 @@
 package cli
 
 import (
-	"log"
+	"flag"
+	"fmt"
 	"os"
 	"strings"
+
+	"github.com/fatih/color"
 )
+
+const usage = `Usage:
+  plasma create -n <project-name> -c [optional] <compose-file>
+	<compose-file> - default: docker-compose.yml
+`
 
 func IsCLI() bool {
 	splitted := strings.Split(os.Args[0], "/")
@@ -16,5 +24,16 @@ func IsCLI() bool {
 }
 
 func Run() {
-	log.Println("oOoOo Starting plasma-cli oOoOo")
+	createCmd := flag.NewFlagSet("create", flag.ExitOnError)
+
+	if len(os.Args) < 2 {
+		fmt.Print(usage)
+		os.Exit(1)
+	}
+
+	switch os.Args[1] {
+	case "create":
+		createCmd.Parse(os.Args[2:])
+		color.Magenta("Creating project...")
+	}
 }
