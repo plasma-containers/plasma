@@ -68,3 +68,9 @@ tasks:
     - docker image rm postgres:alpine nginx:alpine || true
     - docker volume rm test_nginx_vol || true
     - ./plasma create -n test -c docker-compose.example.create.yml
+
+  ps:
+    desc: Run CLI with ps command
+    cmds:
+    - task: build-cli
+    - ./plasma ps
