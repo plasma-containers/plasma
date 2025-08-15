@@ -11,6 +11,7 @@ import (
 	"github.com/compose-spec/compose-go/v2/types"
 	"github.com/docker/docker/api/types/container"
 	dcr "github.com/docker/docker/client"
+	"github.com/pgulb/plasma/db"
 )
 
 var Docker *dcr.Client
@@ -65,7 +66,7 @@ func ParseCompose(projName string, cmps string) (*types.Project, error) {
 
 func Get(name string) (*container.InspectResponse, error) {
 	ctx := context.Background()
-	ctrs, err := Docker.ContainerList(ctx, container.ListOptions{})
+	ctrs, err := Docker.ContainerList(ctx, container.ListOptions{All: true})
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -85,4 +86,26 @@ func Get(name string) (*container.InspectResponse, error) {
 		return nil, err
 	}
 	return &container, nil
+}
+
+func IsPresentAliveAndHealthy(
+	svc *db.Service,
+	ctr *container.InspectResponse,
+) (bool, bool, bool) {
+	if ctr == nil {
+		//log.Println("Service", svc.Name, "is not present!")
+		return false, false, false
+	} else {
+		if ctr.State.Paused || !ctr.State.Running || ctr.State.OOMKilled || ctr.State.Dead || ctr.State.Restarting {
+			//log.Println("Service", svc.Name, "is stopped!")
+			return true, false, false
+		}
+		if ctr.State.Health != nil {
+			//log.Println("Service", svc.Name, "is running, status %s.", ctr.State.Health.Status)
+			return true, true, ctr.State.Health.Status == "healthy"
+		} else {
+			//log.Println("Service", svc.Name, "is running, no healthcheck defined.")
+			return true, true, true
+		}
+	}
 }
