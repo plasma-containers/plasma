@@ -54,6 +54,12 @@ tasks:
     cmds:
     - go build -o plasma main.go
 
+  run-cli:
+    desc: Run CLI without args
+    cmds:
+    - task: build-cli
+    - ./plasma
+
   run-cli-docker:
     desc: Run CLI in docker without args
     cmds:
