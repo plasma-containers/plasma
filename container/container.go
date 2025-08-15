@@ -208,3 +208,13 @@ func Volume(volName string) (bool, error) {
 	}
 	return false, nil
 }
+
+func VolumeCreate(volName string) error {
+	ctx := context.Background()
+	_, err := Docker.VolumeCreate(ctx, volume.CreateOptions{Name: volName, Driver: "local"})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
