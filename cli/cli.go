@@ -214,5 +214,29 @@ func Run() {
 		color.Magenta(
 			"Then 'use plasma ps' to see if it's working.",
 		)
+		err = os.Remove("docker-compose.plasma.yml")
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
+	case "destroy":
+		color.Magenta("Destroying local plasma...\n")
+		err := os.WriteFile("docker-compose.plasma.yml", []byte(plasmaCompose), 0644)
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
+		err = exec.Command("docker", "compose", "-f", "docker-compose.plasma.yml", "down", "-v").
+			Run()
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
+		color.Magenta("Plasma removed.")
+		err = os.Remove("docker-compose.plasma.yml")
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
 	}
 }
