@@ -74,3 +74,9 @@ tasks:
     cmds:
     - task: build-cli
     - ./plasma ps
+
+  serve:
+    desc: Run CLI with serve command
+    cmds:
+    - task: build-cli
+    - ./plasma serve
