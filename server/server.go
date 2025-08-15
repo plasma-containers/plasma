@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/pgulb/plasma/container"
 	"github.com/pgulb/plasma/db"
@@ -49,6 +50,11 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	err = db.NewProjectToDB(project)
 	if err != nil {
 		log.Println(err)
+		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+			w.WriteHeader(http.StatusConflict)
+			w.Write(Msg(fmt.Sprintf("Project '%s' already exists", projName)))
+			return
+		}
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(Msg(err.Error()))
 		return
