@@ -54,6 +54,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
 	w.Write(Msg(fmt.Sprintf("Project '%s' created", projName)))
 }
 
