@@ -54,19 +54,27 @@ func Run() {
 			ctr, err := container.Get(svc.Name)
 			if err != nil {
 				log.Println(err)
-				log.Println("Going to next service (if not last)...")
+				log.Println("Going to next service.")
 				continue
 			} else {
 				present, alive, healthy := container.IsPresentAliveAndHealthy(&svc, ctr)
+				var wasJustRan bool
 				if !present {
+					log.Println("Service", svc.Name, "is not present!")
+					log.Println("Trying to run it...")
 					err := container.Run(&svc)
 					if err != nil {
 						log.Println(err)
-						log.Println("Going to next service (if not last)...")
+						log.Println("Going to next service.")
 						continue
 					}
+					wasJustRan = true
 				} else {
 					log.Println("Service", svc.Name, "is present.")
+				}
+				if wasJustRan {
+					log.Println("Service", svc.Name, "started, going to next.")
+					continue
 				}
 				if !alive {
 					log.Println("Service", svc.Name, "is not running!")
