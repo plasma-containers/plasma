@@ -264,3 +264,28 @@ func UpKillCount(svc *Service) error {
 	})
 	return err
 }
+
+func Ps() ([]Project, []Service, []Volume, error) {
+	var projects []Project
+	var services []Service
+	var volumes []Volume
+	err := DB.Transaction(func(tx *gorm.DB) error {
+		err := tx.Find(&projects).Error
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		err = tx.Find(&services).Error
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		err = tx.Find(&volumes).Error
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		return nil
+	})
+	return projects, services, volumes, err
+}
