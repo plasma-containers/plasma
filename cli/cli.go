@@ -22,6 +22,17 @@ import (
 const usage = `Usage:
   plasma create -n <project-name> -c [optional] <compose-file>
 	<compose-file> - default: docker-compose.yml
+  - creates a new project from a docker compose file
+  - fails if project with this name already exists
+
+  plasma ps
+  - lists all plasma-managed resources
+
+  plasma serve
+  - deploys plasma-server to local docker
+
+  plasma destroy
+  - destroys plasma-server ran using 'plasma serve'
 `
 
 var baseURL string
