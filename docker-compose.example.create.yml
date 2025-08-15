@@ -4,7 +4,7 @@ services:
     ports:
       - "8008:80"
     volumes:
-      - nginx-conf:/etc/nginx/conf.d
+      - nginx_vol:/usr/share/nginx/html
   db:
     image: postgres:alpine
     environment:
@@ -12,5 +12,5 @@ services:
       - POSTGRES_PASSWORD=postgres
 
 volumes:
-  nginx-conf:
+  nginx_vol:
     driver: local
