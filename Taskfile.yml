@@ -1,0 +1,36 @@
+version: 3
+
+tasks:
+  default:
+    cmds:
+      - task -l
+    silent: true
+
+  send-compose:
+    desc: Send some base64 urlencoded compose to /parse with 'test' project param
+    cmds:
+      - curl -XPOST -s 'localhost:8080/parse?compose=c2VydmljZXM6CiAgd2ViOgogICAgYnVpbGQ6IC4KICAgIHBvcnRzOgogICAgICAtICI4MDAwOjgwMDAiCiAgICB2b2x1bWVzOgogICAgICAtIC46L2NvZGUKICAgIGNvbW1hbmQ6ID4KICAgICAgc2ggLWMgInB5dGhvbiBtYW5hZ2UucHkgd2FpdF9mb3JfZGIgJiYKICAgICAgICAgICAgcHl0aG9uIG1hbmFnZS5weSBtaWdyYXRlICYmCiAgICAgICAgICAgIHB5dGhvbiBtYW5hZ2UucHkgcnVuc2VydmVyIDAuMC4wLjA6ODAwMCIKICBkYjoKICAgIGltYWdlOiBwb3N0Z3JlczoxMy1hbHBpbmUKICAgIGVudmlyb25tZW50OgogICAgICAtIFBPU1RHUkVTX0RCPXBvc3RncmVzCiAgICAgIC0gUE9TVEdSRVNfVVNFUj1wb3N0Z3JlcwogICAgICAtIFBPU1RHUkVTX1BBU1NXT1JEPXBvc3RncmVzCiAgICBwb3J0czoKICAgICAgLSAiNTQzMjo1NDMyIgogICAgdm9sdW1lczoKICAgICAgLSBwb3N0Z3Jlc19kYXRhOi92YXIvbGliL3Bvc3RncmVzcWwvZGF0YQoKdm9sdW1lczoKICBwb3N0Z3Jlc19kYXRhOgogICAgZHJpdmVyOiBsb2NhbAo&project=test' | jq
+
+  compose-up:
+    desc: Run docker compose
+    cmds:
+      - docker compose down -v
+      - docker compose up --build
+
+  build-air:
+    desc: Build air image
+    cmds:
+      - docker build -t cosmtrek/air:test -f Dockerfile.air .
+
+  air:
+    desc: Run hot-reloading plasma-server using air in docker
+    cmds:
+    - task: build-air
+    - rm -f ./test.db || true
+    - |
+      docker run -it --rm \
+      -w /app \
+      -v $(pwd):/app \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -p 127.0.0.1:8080:8080 \
+      cosmtrek/air:test
