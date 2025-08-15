@@ -150,14 +150,9 @@ func imageImport(svc *db.Service) error {
 			return err
 		}
 	}
-	defer importCloser.Close()
-	var body []byte
-	_, err = importCloser.Read(body)
-	if err != nil {
-		log.Println(err)
-		return err
+	if importCloser != nil {
+		defer importCloser.Close()
 	}
-	log.Println(string(body))
 	return nil
 }
 
