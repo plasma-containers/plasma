@@ -9,6 +9,54 @@ import (
 	"github.com/pgulb/plasma/db"
 )
 
+func svcLoop(services []db.Service) {
+	for _, svc := range services {
+		log.Println("-")
+		log.Printf("Checking service '%s'\n", svc.Name)
+		if svc.Image == "" {
+			log.Println("Plasma does not handle 'build' image services.")
+			log.Println("Service", svc.Name, "has no image, skipping.")
+			continue
+		}
+		ctr, err := container.Get(svc.Name)
+		if err != nil {
+			log.Println(err)
+			log.Println("Going to next service.")
+			continue
+		} else {
+			present, alive, healthy := container.IsPresentAliveAndHealthy(&svc, ctr)
+			var wasJustRan bool
+			if !present {
+				log.Println("Service", svc.Name, "is not present!")
+				log.Println("Trying to run it...")
+				err := container.Run(&svc)
+				if err != nil {
+					log.Println(err)
+					log.Println("Going to next service.")
+					continue
+				}
+				wasJustRan = true
+			} else {
+				log.Println("Service", svc.Name, "is present.")
+			}
+			if wasJustRan {
+				log.Println("Service", svc.Name, "started, going to next.")
+				continue
+			}
+			if !alive {
+				log.Println("Service", svc.Name, "is not running!")
+			} else {
+				log.Println("Service", svc.Name, "is running.")
+			}
+			if !healthy {
+				log.Println("Service", svc.Name, "is not healthy!")
+			} else {
+				log.Println("Service", svc.Name, "is healthy.")
+			}
+		}
+	}
+}
+
 func Run() {
 	log.Println("oOoOo Starting plasma-controller oOoOo")
 	interval := os.Getenv("PLASMA_CONTROLLER_INTERVAL")
@@ -43,51 +91,7 @@ func Run() {
 			continue
 		}
 		log.Println("Found", len(services), "services in db.")
-		for _, svc := range services {
-			log.Println("-")
-			log.Printf("Checking service '%s'\n", svc.Name)
-			if svc.Image == "" {
-				log.Println("Plasma does not handle 'build' image services.")
-				log.Println("Service", svc.Name, "has no image, skipping.")
-				continue
-			}
-			ctr, err := container.Get(svc.Name)
-			if err != nil {
-				log.Println(err)
-				log.Println("Going to next service.")
-				continue
-			} else {
-				present, alive, healthy := container.IsPresentAliveAndHealthy(&svc, ctr)
-				var wasJustRan bool
-				if !present {
-					log.Println("Service", svc.Name, "is not present!")
-					log.Println("Trying to run it...")
-					err := container.Run(&svc)
-					if err != nil {
-						log.Println(err)
-						log.Println("Going to next service.")
-						continue
-					}
-					wasJustRan = true
-				} else {
-					log.Println("Service", svc.Name, "is present.")
-				}
-				if wasJustRan {
-					log.Println("Service", svc.Name, "started, going to next.")
-					continue
-				}
-				if !alive {
-					log.Println("Service", svc.Name, "is not running!")
-				} else {
-					log.Println("Service", svc.Name, "is running.")
-				}
-				if !healthy {
-					log.Println("Service", svc.Name, "is not healthy!")
-				} else {
-					log.Println("Service", svc.Name, "is healthy.")
-				}
-			}
-		}
+		svcLoop(services)
 		time.Sleep(parsedInterval)
 	}
 }
