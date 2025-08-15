@@ -2,6 +2,7 @@ package cli
 
 import (
 	"crypto/tls"
+	_ "embed"
 	"encoding/base64"
 	"encoding/json"
 	"flag"
@@ -9,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"strings"
 	"text/tabwriter"
 	"time"
@@ -24,6 +26,9 @@ const usage = `Usage:
 
 var baseURL string
 var client *http.Client
+
+//go:embed plasma-compose.yml
+var plasmaCompose string
 
 type QueryParams struct {
 	Compose *string `json:"compose"`
@@ -189,5 +194,25 @@ func Run() {
 			color.Red(err.Error())
 			os.Exit(1)
 		}
+	case "serve":
+		color.Magenta("Deploying plasma...\n")
+		err := os.WriteFile("docker-compose.plasma.yml", []byte(plasmaCompose), 0644)
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
+		err = exec.Command("docker", "compose", "-f", "docker-compose.plasma.yml", "up", "--build", "-d").
+			Run()
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
+		color.Magenta("Plasma deployed on local docker.")
+		color.Magenta(
+			"Use 'plasma create -n <project-name> -c <compose-file>' to create a new project.",
+		)
+		color.Magenta(
+			"Then 'use plasma ps' to see if it's working.",
+		)
 	}
 }
