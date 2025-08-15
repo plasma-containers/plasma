@@ -23,7 +23,7 @@ func Health(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func Parse(w http.ResponseWriter, r *http.Request) {
+func Create(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	cmps := q.Get("compose")
 	if cmps == "" {
@@ -68,7 +68,7 @@ func Run() {
 	mux := http.NewServeMux()
 
 	mux.Handle("GET /healthz", LoggerMiddleware(http.HandlerFunc(Health)))
-	mux.Handle("POST /parse", LoggerMiddleware(http.HandlerFunc(Parse)))
+	mux.Handle("POST /create", LoggerMiddleware(http.HandlerFunc(Create)))
 
 	log.Fatal(http.ListenAndServe(":8080", mux))
 }
