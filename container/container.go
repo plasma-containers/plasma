@@ -158,7 +158,7 @@ func imgPull(svc *db.Service) error {
 
 func imagePresent(svc *db.Service) (bool, error) {
 	ctx := context.Background()
-	images, err := Docker.ImageList(ctx, image.ListOptions{})
+	images, err := Docker.ImageList(ctx, image.ListOptions{All: true})
 	if err != nil {
 		log.Println(err)
 		return false, err
