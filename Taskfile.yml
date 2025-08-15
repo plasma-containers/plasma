@@ -20,6 +20,7 @@ tasks:
   build-air:
     desc: Build air image
     cmds:
+      - docker network create plasma || true
       - docker build -t cosmtrek/air:test -f Dockerfile.air .
 
   air:
@@ -28,26 +29,33 @@ tasks:
     - task: build-air
     - rm -f ./test.db || true
     - |
-      docker run -it --rm \
+      docker run -it --rm --name plasma-server \
       -w /app \
       -v $(pwd):/app \
       -v /var/run/docker.sock:/var/run/docker.sock \
+      --network plasma \
       -p 127.0.0.1:8080:8080 \
       cosmtrek/air:test
 
-  build-cli:
+  build-cli-docker:
     desc: Build CLI image
     cmds:
+    - docker network create plasma || true
     - docker build -t plasma:cli -f Dockerfile.cli .
 
-  run-cli:
-    desc: Run CLI without args
+  build-cli:
+    desc: Build CLI
     cmds:
-    - task: build-cli
-    - docker run -it --rm plasma:cli
+    - go build -o plasma main.go
+
+  run-cli-docker:
+    desc: Run CLI in docker without args
+    cmds:
+    - task: build-cli-docker
+    - docker run -it --rm --network plasma plasma:cli
 
   proj-create:
     desc: Run CLI with create command
     cmds:
     - task: build-cli
-    - docker run -it --rm plasma:cli /plasma create
+    - ./plasma create
