@@ -45,11 +45,56 @@ func svcLoop(services []db.Service) {
 			}
 			if !alive {
 				log.Println("Service", svc.Name, "is not running!")
+				log.Println("Trying to kill it...")
+				err := container.Kill(ctr.ID)
+				if err != nil {
+					log.Println(err)
+					log.Println("Going to next service.")
+					continue
+				}
+				err = upKillCount(&svc)
+				if err != nil {
+					log.Println(err)
+					log.Println("Going to next service.")
+					continue
+				}
+				log.Println("Trying to run it...")
+				err = container.Run(&svc)
+				if err != nil {
+					log.Println(err)
+					log.Println("Going to next service.")
+					continue
+				}
+				wasJustRan = true
 			} else {
 				log.Println("Service", svc.Name, "is running.")
 			}
+			if wasJustRan {
+				log.Println("Service", svc.Name, "started, going to next.")
+				continue
+			}
 			if !healthy {
 				log.Println("Service", svc.Name, "is not healthy!")
+				log.Println("Trying to kill it...")
+				err := container.Kill(ctr.ID)
+				if err != nil {
+					log.Println(err)
+					log.Println("Going to next service.")
+					continue
+				}
+				err = upKillCount(&svc)
+				if err != nil {
+					log.Println(err)
+					log.Println("Going to next service.")
+					continue
+				}
+				log.Println("Trying to run it...")
+				err = container.Run(&svc)
+				if err != nil {
+					log.Println(err)
+					log.Println("Going to next service.")
+					continue
+				}
 			} else {
 				log.Println("Service", svc.Name, "is healthy.")
 			}
@@ -106,6 +151,10 @@ func GetResources() ([]db.Service, []db.Volume, error) {
 	}
 	log.Println("Found", len(services), "services in db.")
 	return services, volumes, nil
+}
+
+func upKillCount(svc *db.Service) error {
+	return db.UpKillCount(svc)
 }
 
 func Run() {
