@@ -57,6 +57,24 @@ func svcLoop(services []db.Service) {
 	}
 }
 
+func GetResources() ([]db.Service, error) {
+	var projects []db.Project
+	err := db.DB.Find(&projects).Error
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	log.Println("Found", len(projects), "projects in db.")
+	var services []db.Service
+	err = db.DB.Find(&services).Error
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	log.Println("Found", len(services), "services in db.")
+	return services, nil
+}
+
 func Run() {
 	log.Println("oOoOo Starting plasma-controller oOoOo")
 	interval := os.Getenv("PLASMA_CONTROLLER_INTERVAL")
@@ -77,20 +95,10 @@ func Run() {
 	}
 	for {
 		log.Println("---")
-		var projects []db.Project
-		err := db.DB.Find(&projects).Error
+		services, err := GetResources()
 		if err != nil {
-			log.Println(err)
 			continue
 		}
-		log.Println("Found", len(projects), "projects in db.")
-		var services []db.Service
-		err = db.DB.Find(&services).Error
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		log.Println("Found", len(services), "services in db.")
 		svcLoop(services)
 		time.Sleep(parsedInterval)
 	}
