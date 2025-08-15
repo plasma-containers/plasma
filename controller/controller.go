@@ -57,22 +57,47 @@ func svcLoop(services []db.Service) {
 	}
 }
 
-func GetResources() ([]db.Service, error) {
+func volLoop(volumes []db.Volume) {
+	for _, volume := range volumes {
+		log.Println("-")
+		log.Printf("Checking volume '%s'\n", volume.Name)
+		exists, err := container.Volume(volume.Name)
+		if err != nil {
+			log.Println(err)
+			log.Println("Going to next volume.")
+			continue
+		}
+		if exists {
+			log.Println("Volume", volume.Name, "present.")
+		} else {
+			log.Println("Volume", volume.Name, "not present!")
+		}
+	}
+}
+
+func GetResources() ([]db.Service, []db.Volume, error) {
 	var projects []db.Project
 	err := db.DB.Find(&projects).Error
 	if err != nil {
 		log.Println(err)
-		return nil, err
+		return nil, nil, err
 	}
 	log.Println("Found", len(projects), "projects in db.")
+	var volumes []db.Volume
+	err = db.DB.Find(&volumes).Error
+	if err != nil {
+		log.Println(err)
+		return nil, nil, err
+	}
+	log.Println("Found", len(volumes), "volumes in db.")
 	var services []db.Service
 	err = db.DB.Find(&services).Error
 	if err != nil {
 		log.Println(err)
-		return nil, err
+		return nil, nil, err
 	}
 	log.Println("Found", len(services), "services in db.")
-	return services, nil
+	return services, volumes, nil
 }
 
 func Run() {
@@ -95,10 +120,11 @@ func Run() {
 	}
 	for {
 		log.Println("---")
-		services, err := GetResources()
+		services, volumes, err := GetResources()
 		if err != nil {
 			continue
 		}
+		volLoop(volumes)
 		svcLoop(services)
 		time.Sleep(parsedInterval)
 	}
