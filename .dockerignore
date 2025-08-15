@@ -5,6 +5,7 @@
 *.json
 Dockerfile*
 docker-compose*
+.docker-compose*
 tmp/
 Taskfile.yml
 plasma

@@ -3,3 +3,4 @@
 tmp/
 plasma
 docker-compose.plasma.yml
+.docker-compose*
