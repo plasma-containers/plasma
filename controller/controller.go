@@ -46,8 +46,18 @@ func Run() {
 			ctr, err := container.Get(svc.Name)
 			if err != nil {
 				log.Println(err)
+				log.Println("Going to next service (if not last)...")
+				continue
 			} else {
-				present, alive, healthy := container.IsPresentAliveAndHealthy(&svc, ctr)
+				present, _, _ := container.IsPresentAliveAndHealthy(&svc, ctr)
+				if !present {
+					err := container.Run(&svc)
+					if err != nil {
+						log.Println(err)
+						log.Println("Going to next service (if not last)...")
+						continue
+					}
+				}
 			}
 		}
 		time.Sleep(parsedInterval)
