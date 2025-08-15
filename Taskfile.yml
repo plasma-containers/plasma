@@ -24,6 +24,12 @@ tasks:
       - docker build -t cosmtrek/air:test -f Dockerfile.air .
 
   air:
+    desc: Run hot-reloading plasma-server using air
+    cmds:
+    - rm -f ./test.db || true
+    - air
+
+  air-docker:
     desc: Run hot-reloading plasma-server using air in docker
     cmds:
     - task: build-air
