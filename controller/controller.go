@@ -28,6 +28,7 @@ func Run() {
 		log.Fatal(err)
 	}
 	for {
+		log.Println("---")
 		var projects []db.Project
 		err := db.DB.Find(&projects).Error
 		if err != nil {
@@ -43,6 +44,12 @@ func Run() {
 		}
 		log.Println("Found", len(services), "services in db.")
 		for _, svc := range services {
+			log.Printf("Checking service '%s'\n", svc.Name)
+			if svc.Image == "" {
+				log.Println("Plasma does not handle 'build' image services.")
+				log.Println("Service", svc.Name, "has no image, skipping.")
+				continue
+			}
 			ctr, err := container.Get(svc.Name)
 			if err != nil {
 				log.Println(err)
