@@ -6,29 +6,42 @@ tasks:
       - task -l
     silent: true
 
-  compose-up:
+  server:compose:
     desc: Run docker compose
     cmds:
       - docker compose down -v
       - docker compose up --build
 
-  .build-air:
+  .build:air:
     desc: Build air image
     cmds:
       - docker network create plasma || true
       - docker build -t cosmtrek/air:test -f Dockerfile.air .
     internal: true
 
-  air:
+  .build:cli-docker:
+    desc: Build CLI image
+    cmds:
+    - docker network create plasma || true
+    - docker build -t plasma:cli -f Dockerfile.cli .
+    internal: true
+
+  .build:cli:
+    desc: Build CLI
+    cmds:
+    - go build -o plasma main.go
+    internal: true
+
+  server:air:
     desc: Run hot-reloading plasma-server using air
     cmds:
     - rm -f ./test.db || true
     - air
 
-  air-docker:
+  server:air-docker:
     desc: Run hot-reloading plasma-server using air in docker
     cmds:
-    - task: build-air
+    - task: .build:air
     - rm -f ./test.db || true
     - |
       docker run -it --rm --name plasma-server \
@@ -39,59 +52,46 @@ tasks:
       -p 127.0.0.1:8080:8080 \
       cosmtrek/air:test
 
-  .build-cli-docker:
-    desc: Build CLI image
-    cmds:
-    - docker network create plasma || true
-    - docker build -t plasma:cli -f Dockerfile.cli .
-    internal: true
-
-  .build-cli:
-    desc: Build CLI
-    cmds:
-    - go build -o plasma main.go
-    internal: true
-
-  run-cli:
+  cli:bin:
     desc: Run CLI without args
     cmds:
-    - task: build-cli
+    - task: .build:cli
     - ./plasma
 
-  run-cli-docker:
+  cli:docker:
     desc: Run CLI in docker without args
     cmds:
-    - task: build-cli-docker
+    - task: .build:cli-docker
     - docker run -it --rm --network plasma plasma:cli
 
-  proj-create:
+  cmd:create:
     desc: Run CLI with create command
     cmds:
-    - task: build-cli
+    - task: .build:cli
     - docker rm -f db web || true
     - docker image rm postgres:alpine nginx:alpine || true
     - docker volume rm test_nginx_vol || true
     - ./plasma create -n test -c docker-compose.example.create.yml
 
-  ps:
+  cmd:ps:
     desc: Run CLI with ps command
     cmds:
-    - task: build-cli
+    - task: .build:cli
     - ./plasma ps
 
-  serve:
+  cmd:serve:
     desc: Run CLI with serve command
     cmds:
-    - task: build-cli
+    - task: .build:cli
     - ./plasma serve
 
-  destroy:
+  cmd:destroy:
     desc: Run CLI with destroy command
     cmds:
-    - task: build-cli
+    - task: .build:cli
     - ./plasma destroy
 
-  tag:
+  git:tag:
     desc: create new git tag - use TAG variable to set
     cmds:
     - git tag -a "{{.TAG}}" -m "version {{.TAG}}"
