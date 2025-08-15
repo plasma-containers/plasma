@@ -12,11 +12,12 @@ tasks:
       - docker compose down -v
       - docker compose up --build
 
-  build-air:
+  .build-air:
     desc: Build air image
     cmds:
       - docker network create plasma || true
       - docker build -t cosmtrek/air:test -f Dockerfile.air .
+    internal: true
 
   air:
     desc: Run hot-reloading plasma-server using air
@@ -38,16 +39,18 @@ tasks:
       -p 127.0.0.1:8080:8080 \
       cosmtrek/air:test
 
-  build-cli-docker:
+  .build-cli-docker:
     desc: Build CLI image
     cmds:
     - docker network create plasma || true
     - docker build -t plasma:cli -f Dockerfile.cli .
+    internal: true
 
-  build-cli:
+  .build-cli:
     desc: Build CLI
     cmds:
     - go build -o plasma main.go
+    internal: true
 
   run-cli:
     desc: Run CLI without args
