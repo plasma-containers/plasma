@@ -60,4 +60,5 @@ tasks:
     - task: build-cli
     - docker rm -f db web || true
     - docker image rm postgres:alpine nginx:alpine || true
+    - docker volume rm test_nginx-conf || true
     - ./plasma create -n test -c docker-compose.example.create.yml
