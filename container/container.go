@@ -10,6 +10,7 @@ import (
 	"github.com/compose-spec/compose-go/v2/cli"
 	"github.com/compose-spec/compose-go/v2/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/network"
 	dcr "github.com/docker/docker/client"
 	"github.com/pgulb/plasma/db"
 )
@@ -86,6 +87,28 @@ func Get(name string) (*container.InspectResponse, error) {
 		return nil, err
 	}
 	return &container, nil
+}
+
+func Run(svc *db.Service) error {
+	ctx := context.Background()
+	created, err := Docker.ContainerCreate(
+		ctx,
+		&container.Config{Image: svc.Image},
+		&container.HostConfig{},
+		&network.NetworkingConfig{},
+		nil,
+		svc.Name,
+	)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	err = Docker.ContainerStart(ctx, created.ID, container.StartOptions{})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
 }
 
 func IsPresentAliveAndHealthy(
