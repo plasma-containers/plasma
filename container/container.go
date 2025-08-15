@@ -99,7 +99,7 @@ func Run(svc *db.Service) error {
 		return err
 	}
 	if !imgPresent {
-		err := imageImport(svc)
+		err := imgPull(svc)
 		if err != nil {
 			log.Println(err)
 			return err
@@ -125,7 +125,7 @@ func Run(svc *db.Service) error {
 	return nil
 }
 
-func imageImport(svc *db.Service) error {
+func imgPull(svc *db.Service) error {
 	ctx := context.Background()
 	log.Println("Pulling image", svc.Image)
 	closer, err := Docker.ImagePull(ctx, svc.Image, image.PullOptions{})
