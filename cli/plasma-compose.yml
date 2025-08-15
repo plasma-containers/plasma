@@ -1,0 +1,10 @@
+#
+# TODO: change to image from GitHub CR
+# and change tag dynamically to match cli version
+# maybe just make it a text/template and pass cli version into it
+#
+services:
+  plasma-server:
+    build: .
+    ports:
+      - "127.0.0.1:8080:8080"
