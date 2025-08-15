@@ -48,8 +48,7 @@ func initHttpClient() {
 
 func initBaseURL() {
 	// TODO: read from env or some config file and provide localhost as default
-	// for now it's hard-coded in-docker addr
-	baseURL = "http://plasma-server:8080"
+	baseURL = "http://localhost:8080"
 }
 
 func reqDo(method string, url string, qp *QueryParams) (*server.RespMsg, int, error) {
