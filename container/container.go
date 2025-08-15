@@ -13,6 +13,7 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/api/types/network"
+	"github.com/docker/docker/api/types/volume"
 	dcr "github.com/docker/docker/client"
 	"github.com/pgulb/plasma/db"
 )
@@ -191,4 +192,19 @@ func IsPresentAliveAndHealthy(
 			return true, true, true
 		}
 	}
+}
+
+func Volume(volName string) (bool, error) {
+	ctx := context.Background()
+	vols, err := Docker.VolumeList(ctx, volume.ListOptions{})
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+	for _, vol := range vols.Volumes {
+		if vol.Name == volName {
+			return true, nil
+		}
+	}
+	return false, nil
 }
