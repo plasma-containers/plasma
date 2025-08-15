@@ -95,6 +95,9 @@ func Ps(w http.ResponseWriter, r *http.Request) {
 			w.Write(Msg(err.Error()))
 			return
 		}
+		if ctr == nil {
+			statuses = append(statuses, CtrStatus{Name: svc.Name, Status: "unknown"})
+		}
 		if ctr.State == nil {
 			statuses = append(statuses, CtrStatus{Name: svc.Name, Status: "unknown"})
 		} else {
