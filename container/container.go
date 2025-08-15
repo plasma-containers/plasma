@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"slices"
+	"strings"
 
 	"github.com/compose-spec/compose-go/v2/cli"
 	"github.com/compose-spec/compose-go/v2/types"
@@ -143,8 +144,11 @@ func imageImport(svc *db.Service) error {
 		image.ImportOptions{},
 	)
 	if err != nil {
-		log.Println(err)
-		return err
+		// for some reason this is returned but it works
+		if !strings.Contains(err.Error(), "invalid tar header") {
+			log.Println(err)
+			return err
+		}
 	}
 	defer importCloser.Close()
 	var body []byte
