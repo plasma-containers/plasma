@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"text/tabwriter"
 	"time"
 
 	"github.com/fatih/color"
@@ -127,5 +128,66 @@ func Run() {
 			os.Exit(1)
 		}
 		color.Magenta(msg.Msg)
+	case "ps":
+		msg, status, err := reqDo("GET", "/ps", &QueryParams{})
+		if err != nil {
+			color.Magenta(msg.Msg)
+			color.Red(err.Error())
+			os.Exit(1)
+		}
+		color.Magenta(fmt.Sprintf("HTTP status code %v", status))
+		if status != 200 {
+			color.Red(msg.Msg)
+			os.Exit(1)
+		}
+		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
+		var psResp server.PsResp
+		err = json.Unmarshal([]byte(msg.Msg), &psResp)
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
+		fmt.Fprintln(w, "project\t|\tcreated_at\t|\tupdated_at\t")
+		fmt.Fprintln(w, "---\t|\t---\t|\t---\t")
+		for _, proj := range psResp.Projects {
+			fmt.Fprintf(
+				w,
+				"%s\t|\t%s\t|\t%s\t\n",
+				proj.Name,
+				proj.CreatedAt.Format(time.RFC3339),
+				proj.UpdatedAt.Format(time.RFC3339),
+			)
+		}
+		fmt.Fprintf(w, "\n")
+		fmt.Fprintln(w, "svc\t|\tproject\t|\timage\t|\tstatus\t|\ttimes_killed\t")
+		fmt.Fprintln(w, "---\t|\t---\t|\t---\t|\t---\t|\t---\t")
+		for _, svc := range psResp.Services {
+			var ctrStatus string
+			for _, s := range psResp.Statuses {
+				if s.Name == svc.Name {
+					ctrStatus = s.Status
+				}
+			}
+			projName := ""
+			for _, p := range psResp.Projects {
+				if p.ID == svc.ProjectId {
+					projName = p.Name
+				}
+			}
+			fmt.Fprintf(
+				w,
+				"%s\t|\t%s\t|\t%s\t|\t%s\t|\t%v\t\n",
+				svc.Name,
+				projName,
+				svc.Image,
+				ctrStatus,
+				svc.ControllerKillCount,
+			)
+		}
+		err = w.Flush()
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
 	}
 }
