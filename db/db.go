@@ -40,7 +40,7 @@ type Service struct {
 	Image                    string
 	PullPolicy               *string
 	ControllerHealthy        bool
-	ControllerRedeployCount  uint
+	ControllerKillCount      uint
 }
 
 type Project struct {
