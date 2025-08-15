@@ -218,3 +218,12 @@ func VolumeCreate(volName string) error {
 	}
 	return nil
 }
+
+func Kill(ctrID string) error {
+	ctx := context.Background()
+	err := Docker.ContainerRemove(ctx, ctrID, container.RemoveOptions{})
+	if err != nil {
+		return err
+	}
+	return nil
+}
