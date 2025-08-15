@@ -71,6 +71,14 @@ func volLoop(volumes []db.Volume) {
 			log.Println("Volume", volume.Name, "present.")
 		} else {
 			log.Println("Volume", volume.Name, "not present!")
+			log.Println("Trying to create it...")
+			err := container.VolumeCreate(volume.Name)
+			if err != nil {
+				log.Println(err)
+			} else {
+				log.Println("Volume", volume.Name, "created.")
+			}
+			log.Println("Going to next volume.")
 		}
 	}
 }
