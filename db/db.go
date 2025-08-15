@@ -39,7 +39,6 @@ type Service struct {
 	HealthCheckDisable       *bool
 	Image                    string
 	PullPolicy               *string
-	ControllerHealthy        bool
 	ControllerKillCount      uint
 }
 
@@ -99,7 +98,6 @@ func servicesFromCompose(input *types.Project, projID uint) ([]*Service, error) 
 			HealthCheckDisable:       nil,
 			Image:                    svc.Image, // probably never empty
 			PullPolicy:               nil,
-			ControllerHealthy:        true,
 		}
 		if svc.Command != nil {
 			cmdBytes, err := json.Marshal(svc.Command)
@@ -159,7 +157,6 @@ func servicesFromCompose(input *types.Project, projID uint) ([]*Service, error) 
 			newSvc.Hostname = &svc.Hostname
 		}
 		if svc.HealthCheck != nil {
-			newSvc.ControllerHealthy = false
 			if svc.HealthCheck.Test != nil {
 				healthcheckCmd := strings.Join(svc.HealthCheck.Test, " ")
 				newSvc.HealthCheckCmd = &healthcheckCmd
@@ -245,6 +242,23 @@ func NewProjectToDB(input *types.Project) error {
 			if err := tx.Create(vol).Error; err != nil {
 				return err
 			}
+		}
+		return nil
+	})
+	return err
+}
+
+func UpKillCount(svc *Service) error {
+	err := DB.Transaction(func(tx *gorm.DB) error {
+		var svcFromDB *Service
+		err := tx.Find(&svcFromDB, "Name = ?", svc.Name).Error
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		svcFromDB.ControllerKillCount++
+		if err := tx.Save(&svcFromDB).Error; err != nil {
+			return err
 		}
 		return nil
 	})
