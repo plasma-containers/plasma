@@ -35,8 +35,19 @@ tasks:
       -p 127.0.0.1:8080:8080 \
       cosmtrek/air:test
 
+  build-cli:
+    desc: Build CLI image
+    cmds:
+    - docker build -t plasma:cli -f Dockerfile.cli .
+
   run-cli:
     desc: Run CLI without args
     cmds:
-    - docker build -t plasma:cli -f Dockerfile.cli .
+    - task: build-cli
     - docker run -it --rm plasma:cli
+
+  proj-create:
+    desc: Run CLI with create command
+    cmds:
+    - task: build-cli
+    - docker run -it --rm plasma:cli /plasma create
