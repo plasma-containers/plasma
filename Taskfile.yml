@@ -80,3 +80,9 @@ tasks:
     cmds:
     - task: build-cli
     - ./plasma serve
+
+  destroy:
+    desc: Run CLI with destroy command
+    cmds:
+    - task: build-cli
+    - ./plasma destroy
