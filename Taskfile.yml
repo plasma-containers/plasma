@@ -58,4 +58,4 @@ tasks:
     desc: Run CLI with create command
     cmds:
     - task: build-cli
-    - ./plasma create
+    - ./plasma create -n test -c docker-compose.example.create.yml
