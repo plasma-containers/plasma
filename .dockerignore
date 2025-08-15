@@ -3,7 +3,8 @@
 .dockerignore
 *.db
 *.json
-Dockerfile
+Dockerfile*
 docker-compose.yml
 tmp/
 Taskfile.yml
+plasma
