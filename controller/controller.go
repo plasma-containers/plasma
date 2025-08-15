@@ -47,15 +47,7 @@ func Run() {
 			if err != nil {
 				log.Println(err)
 			} else {
-				if ctr == nil {
-					log.Println("Service", svc.Name, "is not running!")
-				} else {
-					if ctr.State.Health != nil {
-						log.Println("Service", svc.Name, "is running, status %s.", ctr.State.Health.Status)
-					} else {
-						log.Println("Service", svc.Name, "is running, no healthcheck defined.")
-					}
-				}
+				present, alive, healthy := container.IsPresentAliveAndHealthy(&svc, ctr)
 			}
 		}
 		time.Sleep(parsedInterval)
