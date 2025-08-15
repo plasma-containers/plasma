@@ -58,4 +58,6 @@ tasks:
     desc: Run CLI with create command
     cmds:
     - task: build-cli
+    - docker rm -f db web || true
+    - docker image rm postgres:alpine nginx:alpine || true
     - ./plasma create -n test -c docker-compose.example.create.yml
