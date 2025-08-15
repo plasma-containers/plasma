@@ -2,6 +2,7 @@ package cli
 
 import (
 	"crypto/tls"
+	"encoding/base64"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -92,7 +93,8 @@ func Run() {
 
 	switch os.Args[1] {
 	case "create":
-		projName := flag.String("n", "", "project name to create")
+		projName := createCmd.String("n", "", "project name to create")
+		composeFile := createCmd.String("c", "docker-compose.yml", "compose file to upload")
 		createCmd.Parse(os.Args[2:])
 		if projName == nil {
 			fmt.Print(usage)
@@ -102,16 +104,26 @@ func Run() {
 			fmt.Print(usage)
 			os.Exit(1)
 		}
-		color.Magenta("Creating project...\n")
-		msg, status, err := reqDo("POST", "/create", &QueryParams{})
+		color.Magenta(fmt.Sprintf("Creating project %s...\n\n", *projName))
+		compoBytes, err := os.ReadFile(*composeFile)
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
+		composeB64 := base64.RawURLEncoding.EncodeToString(compoBytes)
+		msg, status, err := reqDo(
+			"POST",
+			"/create",
+			&QueryParams{Compose: &composeB64, Project: projName},
+		)
 		if err != nil {
 			color.Magenta(msg.Msg)
 			color.Red(err.Error())
 			os.Exit(1)
 		}
+		color.Magenta(fmt.Sprintf("HTTP status code %v", status))
 		if status != 201 {
 			color.Red(msg.Msg)
-			color.Red(fmt.Sprintf("HTTP status code %v", status))
 			os.Exit(1)
 		}
 		color.Magenta(msg.Msg)
