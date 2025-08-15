@@ -5,6 +5,7 @@ go 1.24.6
 require (
 	github.com/compose-spec/compose-go/v2 v2.8.1
 	github.com/docker/docker v28.3.1+incompatible
+	github.com/fatih/color v1.18.0
 	github.com/glebarez/sqlite v1.11.0
 	gorm.io/gorm v1.30.1
 )
@@ -27,7 +28,8 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/mattn/go-isatty v0.0.17 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-shellwords v1.0.12 // indirect
 	github.com/moby/docker-image-spec v1.3.1 // indirect
 	github.com/moby/sys/atomicwriter v0.1.0 // indirect
