@@ -92,3 +92,9 @@ tasks:
     cmds:
     - task: build-cli
     - ./plasma destroy
+
+  tag:
+    desc: create new git tag - use TAG variable to set
+    cmds:
+    - git tag -a "{{.TAG}}" -m "version {{.TAG}}"
+    - git-chglog --output=CHANGELOG.md
