@@ -44,6 +44,7 @@ func Run() {
 		}
 		log.Println("Found", len(services), "services in db.")
 		for _, svc := range services {
+			log.Println("-")
 			log.Printf("Checking service '%s'\n", svc.Name)
 			if svc.Image == "" {
 				log.Println("Plasma does not handle 'build' image services.")
