@@ -40,6 +40,7 @@ type Service struct {
 	Image                    string
 	PullPolicy               *string
 	Volumes                  *string // []VolumeInDB, marshalled as json string
+	Ports                    *string // []PortInDB, marshalled as json string
 	ControllerKillCount      uint
 }
 
@@ -52,6 +53,16 @@ type VolumeInDB struct {
 	Type   string `json:"type"`   // "volume" or "bind" (for host path mounting)
 	Source string `json:"source"` // for volume type, volume name; for bind type, host path
 	Target string `json:"target"`
+}
+
+type PortInDB struct {
+	Name        string `json:"name"`
+	Mode        string `json:"mode"`
+	HostIP      string `json:"host_ip"`
+	Target      uint32 `json:"target"`
+	Published   string `json:"published"`
+	Protocol    string `json:"protocol"`
+	AppProtocol string `json:"app_protocol"`
 }
 
 func Init() error {
@@ -209,6 +220,27 @@ func servicesFromCompose(input *types.Project, projID uint) ([]*Service, error) 
 			}
 			volsToDB := string(volsBytes)
 			newSvc.Volumes = &volsToDB
+		}
+		if svc.Ports != nil {
+			var ports []PortInDB
+			for _, port := range svc.Ports {
+				ports = append(ports, PortInDB{
+					Name:        port.Name,
+					Mode:        port.Mode,
+					HostIP:      port.HostIP,
+					Target:      port.Target,
+					Published:   port.Published,
+					Protocol:    port.Protocol,
+					AppProtocol: port.AppProtocol,
+				})
+			}
+			portsBytes, err := json.Marshal(ports)
+			if err != nil {
+				log.Println(err)
+				return nil, err
+			}
+			portsToDB := string(portsBytes)
+			newSvc.Ports = &portsToDB
 		}
 		svcs = append(svcs, &newSvc)
 	}
