@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/compose-spec/compose-go/v2/cli"
@@ -16,6 +17,7 @@ import (
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/api/types/volume"
 	dcr "github.com/docker/docker/client"
+	"github.com/docker/go-connections/nat"
 	"github.com/pgulb/plasma/db"
 )
 
@@ -119,10 +121,28 @@ func Run(svc *db.Service) error {
 			binds = append(binds, v.Source+":"+v.Target)
 		}
 	}
+	var portsFromDB []db.PortInDB
+	var portBindings nat.PortMap
+	if svc.Ports != nil {
+		portBindings = make(nat.PortMap)
+		err := json.Unmarshal([]byte(*svc.Ports), &portsFromDB)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		for _, port := range portsFromDB {
+			portBindings[nat.Port(strconv.FormatUint(uint64(port.Target), 10))+"/tcp"] = []nat.PortBinding{
+				{
+					HostIP:   port.HostIP,
+					HostPort: port.Published,
+				},
+			}
+		}
+	}
 	created, err := Docker.ContainerCreate(
 		ctx,
 		&container.Config{Image: svc.Image},
-		&container.HostConfig{Binds: binds},
+		&container.HostConfig{Binds: binds, PortBindings: portBindings},
 		&network.NetworkingConfig{},
 		nil,
 		svc.Name,
