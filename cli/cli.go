@@ -258,7 +258,7 @@ func Run() {
 			"Use 'plasma create -n <project-name> -c <compose-file>' to create a new project.",
 		)
 		color.Magenta(
-			"Then 'use plasma ps' to see if it's working.",
+			"Then use 'plasma ps' to see if it's working.",
 		)
 		err = os.Remove("docker-compose.plasma.yml")
 		if err != nil {
