@@ -16,8 +16,8 @@ import (
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/pgulb/plasma/db"
-	"github.com/pgulb/plasma/server"
+	"github.com/plasma-containers/plasma/db"
+	"github.com/plasma-containers/plasma/server"
 )
 
 const usage = `Usage:

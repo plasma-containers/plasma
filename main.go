@@ -4,10 +4,10 @@ import (
 	"log"
 	"time"
 
-	"github.com/pgulb/plasma/cli"
-	"github.com/pgulb/plasma/controller"
-	"github.com/pgulb/plasma/db"
-	"github.com/pgulb/plasma/server"
+	"github.com/plasma-containers/plasma/cli"
+	"github.com/plasma-containers/plasma/controller"
+	"github.com/plasma-containers/plasma/db"
+	"github.com/plasma-containers/plasma/server"
 )
 
 func main() {
