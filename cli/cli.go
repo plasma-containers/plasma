@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/pgulb/plasma/db"
 	"github.com/pgulb/plasma/server"
 )
 
@@ -163,20 +164,19 @@ func Run() {
 			color.Red(err.Error())
 			os.Exit(1)
 		}
-		fmt.Fprintln(w, "project\t|\tcreated_at\t|\tupdated_at\t")
-		fmt.Fprintln(w, "---\t|\t---\t|\t---\t")
+		fmt.Fprintln(w, "project\t|\tcreated_at\t")
+		fmt.Fprintln(w, "---\t|\t---\t")
 		for _, proj := range psResp.Projects {
 			fmt.Fprintf(
 				w,
-				"%s\t|\t%s\t|\t%s\t\n",
+				"%s\t|\t%s\t\n",
 				proj.Name,
 				proj.CreatedAt.Format(time.RFC3339),
-				proj.UpdatedAt.Format(time.RFC3339),
 			)
 		}
 		fmt.Fprintf(w, "\n")
-		fmt.Fprintln(w, "svc\t|\tproject\t|\timage\t|\tstatus\t|\ttimes_killed\t")
-		fmt.Fprintln(w, "---\t|\t---\t|\t---\t|\t---\t|\t---\t")
+		fmt.Fprintln(w, "svc\t|\tproj\t|\timg\t|\tstatus\t|\tports\t|\tmounts\t|\trestarts\t")
+		fmt.Fprintln(w, "---\t|\t---\t|\t---\t|\t---\t|\t---\t|\t---\t|\t---\t")
 		for _, svc := range psResp.Services {
 			var ctrStatus string
 			for _, s := range psResp.Statuses {
@@ -190,13 +190,48 @@ func Run() {
 					projName = p.Name
 				}
 			}
+			var ports string
+			vols := 0
+			var portsFromDB []db.PortInDB
+			var volsFromDB []db.VolumeInDB
+			if svc.Ports != nil {
+				err := json.Unmarshal([]byte(*svc.Ports), &portsFromDB)
+				if err != nil {
+					color.Red(err.Error())
+					os.Exit(1)
+				}
+				portsBuilder := strings.Builder{}
+				for i, p := range portsFromDB {
+					if p.HostIP == "" {
+						portsBuilder.WriteString(fmt.Sprintf("%s:%v", p.Published, p.Target))
+					} else {
+						portsBuilder.WriteString(fmt.Sprintf("%v:%s:%v", p.HostIP, p.Published, p.Target))
+					}
+					if i < len(portsFromDB)-1 {
+						portsBuilder.WriteString(", ")
+					}
+				}
+				ports = portsBuilder.String()
+			} else {
+				ports = "-"
+			}
+			if svc.Volumes != nil {
+				err := json.Unmarshal([]byte(*svc.Volumes), &volsFromDB)
+				if err != nil {
+					color.Red(err.Error())
+					os.Exit(1)
+				}
+				vols = len(volsFromDB)
+			}
 			fmt.Fprintf(
 				w,
-				"%s\t|\t%s\t|\t%s\t|\t%s\t|\t%v\t\n",
+				"%s\t|\t%s\t|\t%s\t|\t%s\t|\t%s\t|\t%v\t|\t%v\t\n",
 				svc.Name,
 				projName,
 				svc.Image,
 				ctrStatus,
+				ports,
+				vols,
 				svc.ControllerKillCount,
 			)
 		}
