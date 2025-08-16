@@ -1,4 +1,19 @@
 
+<a name="v0.2.0"></a>
+## [v0.2.0](https://github.com/plasma-containers/plasma/compare/v0.1.1...v0.2.0) (2025-08-16)
+
+### Feat
+
+* **container:** add support for port mapping
+* **container:** add mounting volumes and bind mounts into containers (for now only rw mode)
+* **db:** serialize port configuration into sqlite
+* **db:** serialize volume configuration into sqlite
+
+### Fix
+
+* **cli:** mount docker.sock into plasma deployed by 'plasma serve'
+
+
 <a name="v0.1.1"></a>
 ## [v0.1.1](https://github.com/plasma-containers/plasma/compare/v0.1.0...v0.1.1) (2025-08-15)
 
