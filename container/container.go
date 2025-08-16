@@ -73,6 +73,8 @@ func ParseCompose(projName string, cmps string) (*types.Project, error) {
 
 func Get(name string) (*container.InspectResponse, error) {
 	ctx := context.Background()
+	// TODO: probably sometimes ContainerList() panics for no known reason
+	// needs to be recovered
 	ctrs, err := Docker.ContainerList(ctx, container.ListOptions{All: true})
 	if err != nil {
 		log.Println(err)
