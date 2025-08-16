@@ -36,6 +36,8 @@ const usage = `Usage:
   - destroys plasma-server ran using 'plasma serve'
 `
 
+const wrongOrMissingParameters = "\nWrong or missing command parameters, check usage"
+
 var baseURL string
 var client *http.Client
 
@@ -105,7 +107,7 @@ func Run() {
 	initHttpClient()
 	initBaseURL()
 	if len(os.Args) < 2 {
-		fmt.Print(usage)
+		color.Magenta(usage)
 		os.Exit(1)
 	}
 
@@ -115,11 +117,13 @@ func Run() {
 		composeFile := createCmd.String("c", "docker-compose.yml", "compose file to upload")
 		createCmd.Parse(os.Args[2:])
 		if projName == nil {
-			fmt.Print(usage)
+			color.Magenta(usage)
+			color.Red(wrongOrMissingParameters)
 			os.Exit(1)
 		}
 		if *projName == "" {
-			fmt.Print(usage)
+			color.Magenta(usage)
+			color.Red(wrongOrMissingParameters)
 			os.Exit(1)
 		}
 		color.Magenta(fmt.Sprintf("Creating project %s...\n\n", *projName))
