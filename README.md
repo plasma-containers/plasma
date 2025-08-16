@@ -1,5 +1,7 @@
 # plasma 🌌
 
+[Plasma Changelog](CHANGELOG.md)
+
 ## What is it?
 
 Plasma is an application that when deployed to Docker host, allows to deploy Compose projects
