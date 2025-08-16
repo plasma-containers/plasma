@@ -5,6 +5,7 @@ go 1.24.6
 require (
 	github.com/compose-spec/compose-go/v2 v2.8.1
 	github.com/docker/docker v28.3.1+incompatible
+	github.com/docker/go-connections v0.4.0
 	github.com/fatih/color v1.18.0
 	github.com/glebarez/sqlite v1.11.0
 	gorm.io/gorm v1.30.1
@@ -16,7 +17,6 @@ require (
 	github.com/containerd/errdefs/pkg v0.3.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
 	github.com/distribution/reference v0.5.0 // indirect
-	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
