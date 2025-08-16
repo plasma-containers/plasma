@@ -154,13 +154,15 @@ func servicesFromCompose(input *types.Project, projID uint) ([]*Service, error) 
 			newSvc.Entrypoint = &entr
 		}
 		if svc.Environment != nil {
-			envsBytes, err := json.Marshal(svc.Environment)
-			if err != nil {
-				log.Println(err)
-				return nil, err
+			if len(svc.Environment) > 0 {
+				envsBytes, err := json.Marshal(svc.Environment)
+				if err != nil {
+					log.Println(err)
+					return nil, err
+				}
+				envs := string(envsBytes)
+				newSvc.Environment = &envs
 			}
-			envs := string(envsBytes)
-			newSvc.Environment = &envs
 		}
 		if svc.Expose != nil {
 			exposeBytes, err := json.Marshal(svc.Expose)
