@@ -1,4 +1,24 @@
 
+<a name="v0.3.0"></a>
+## [v0.3.0](https://github.com/plasma-containers/plasma/compare/v0.2.0...v0.3.0) (2025-08-16)
+
+### Chore
+
+* **core:** tidy go.mod
+* **readme:** add link to changelog
+
+### Feat
+
+* **cli:** print colored Usage, add info in Red when missing parameters
+* **cli:** more concise ps output, add data about mount count and ports mapped
+* **container:** add support for environment vars
+
+### Fix
+
+* **db:** do not insert empty {} environment
+* **server:** do not check if ctr.State == nil if ctr == nil
+
+
 <a name="v0.2.0"></a>
 ## [v0.2.0](https://github.com/plasma-containers/plasma/compare/v0.1.1...v0.2.0) (2025-08-16)
 
