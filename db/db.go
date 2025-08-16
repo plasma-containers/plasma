@@ -39,12 +39,19 @@ type Service struct {
 	HealthCheckDisable       *bool
 	Image                    string
 	PullPolicy               *string
+	Volumes                  *string // []VolumeInDB, marshalled as json string
 	ControllerKillCount      uint
 }
 
 type Project struct {
 	gorm.Model
 	Name string `gorm:"unique"`
+}
+
+type VolumeInDB struct {
+	Type   string `json:"type"`   // "volume" or "bind" (for host path mounting)
+	Source string `json:"source"` // for volume type, volume name; for bind type, host path
+	Target string `json:"target"`
 }
 
 func Init() error {
@@ -185,6 +192,23 @@ func servicesFromCompose(input *types.Project, projID uint) ([]*Service, error) 
 		}
 		if svc.PullPolicy != "" {
 			newSvc.PullPolicy = &svc.PullPolicy
+		}
+		if svc.Volumes != nil {
+			vols := []VolumeInDB{}
+			for _, v := range svc.Volumes {
+				vols = append(vols, VolumeInDB{
+					Type:   v.Type,
+					Source: v.Source,
+					Target: v.Target,
+				})
+			}
+			volsBytes, err := json.Marshal(vols)
+			if err != nil {
+				log.Println(err)
+				return nil, err
+			}
+			volsToDB := string(volsBytes)
+			newSvc.Volumes = &volsToDB
 		}
 		svcs = append(svcs, &newSvc)
 	}
