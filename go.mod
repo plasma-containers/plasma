@@ -1,13 +1,15 @@
-module github.com/pgulb/plasma
+module github.com/plasma-containers/plasma
 
 go 1.24.6
 
 require (
+	connectrpc.com/connect v1.18.1
 	github.com/compose-spec/compose-go/v2 v2.8.1
 	github.com/docker/docker v28.3.1+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/fatih/color v1.18.0
 	github.com/glebarez/sqlite v1.11.0
+	google.golang.org/protobuf v1.36.6
 	gorm.io/gorm v1.30.1
 )
 
