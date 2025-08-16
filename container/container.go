@@ -3,6 +3,7 @@ package container
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"log"
 	"os"
 	"slices"
@@ -106,10 +107,22 @@ func Run(svc *db.Service) error {
 			return err
 		}
 	}
+	var volsFromDB []db.VolumeInDB
+	var binds []string
+	if svc.Volumes != nil {
+		err := json.Unmarshal([]byte(*svc.Volumes), &volsFromDB)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		for _, v := range volsFromDB {
+			binds = append(binds, v.Source+":"+v.Target)
+		}
+	}
 	created, err := Docker.ContainerCreate(
 		ctx,
 		&container.Config{Image: svc.Image},
-		&container.HostConfig{},
+		&container.HostConfig{Binds: binds},
 		&network.NetworkingConfig{},
 		nil,
 		svc.Name,
