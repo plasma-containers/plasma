@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package logs.v1;
+
+option go_package = "grpc-demo/gen/go/logs/v1;v1";
+
+service LoggerService {
+  rpc LogStream(LogStreamRequest) returns (stream LogStreamResponse);
+}
+
+message LogStreamRequest {
+  string name = 1;
+}
+
+message LogStreamResponse {
+  string message = 1;
+}
