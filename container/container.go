@@ -141,9 +141,21 @@ func Run(svc *db.Service) error {
 			}
 		}
 	}
+	var envs []string
+	var envsFromDB map[string]string
+	if svc.Environment != nil {
+		err := json.Unmarshal([]byte(*svc.Environment), &envsFromDB)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		for k, v := range envsFromDB {
+			envs = append(envs, k+"="+v)
+		}
+	}
 	created, err := Docker.ContainerCreate(
 		ctx,
-		&container.Config{Image: svc.Image},
+		&container.Config{Image: svc.Image, Env: envs},
 		&container.HostConfig{Binds: binds, PortBindings: portBindings},
 		&network.NetworkingConfig{},
 		nil,
