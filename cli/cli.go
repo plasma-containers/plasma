@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"crypto/tls"
 	_ "embed"
 	"encoding/base64"
@@ -15,8 +16,11 @@ import (
 	"text/tabwriter"
 	"time"
 
+	"connectrpc.com/connect"
 	"github.com/fatih/color"
 	"github.com/plasma-containers/plasma/db"
+	logsv1 "github.com/plasma-containers/plasma/gen/logs/v1"
+	"github.com/plasma-containers/plasma/gen/logs/v1/logsv1connect"
 	"github.com/plasma-containers/plasma/server"
 )
 
@@ -104,6 +108,7 @@ func reqDo(method string, url string, qp *QueryParams) (*server.RespMsg, int, er
 
 func Run() {
 	createCmd := flag.NewFlagSet("create", flag.ExitOnError)
+	logsCmd := flag.NewFlagSet("logs", flag.ExitOnError)
 	initHttpClient()
 	initBaseURL()
 	if len(os.Args) < 2 {
@@ -287,6 +292,41 @@ func Run() {
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
+		}
+	case "logs":
+		ctrName := logsCmd.String("n", "", "container name to get logs from")
+		logsCmd.Parse(os.Args[2:])
+		if *ctrName == "" {
+			color.Magenta(usage)
+			color.Red(wrongOrMissingParameters)
+			os.Exit(1)
+		}
+		grpcClient := logsv1connect.NewLoggerServiceClient(
+			client,
+			"http://localhost:8081", // TODO: read from env or some config file
+		)
+		ctx := context.Background()
+		stream, err := grpcClient.LogStream(ctx, connect.NewRequest(&logsv1.LogStreamRequest{
+			Name: *ctrName,
+		}))
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
+		for {
+			more := stream.Receive()
+			if !more {
+				color.Magenta("log stream finished")
+				if stream.Err() != nil {
+					color.Red(stream.Err().Error())
+					os.Exit(1)
+				}
+				break
+			}
+
+			// [8:] to remove stream metadata
+			// https://pkg.go.dev/github.com/docker/docker/client#Client.ContainerLogs
+			fmt.Println(string(stream.Msg().Message[8:]))
 		}
 	}
 }
