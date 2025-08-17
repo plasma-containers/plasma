@@ -38,6 +38,10 @@ jobs:
     - name: Install dependencies
       run: go mod download
 
+    - name: Replace version from develop to tag in version/version.go
+      run: |
+        sed -i "s/develop/${GITHUB_REF_NAME}/g" version/version.go
+
     - name: Test
       run: go test -v ./...
 
