@@ -67,7 +67,7 @@ func (x *LogStreamRequest) GetName() string {
 
 type LogStreamResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	Message       []byte                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -102,11 +102,11 @@ func (*LogStreamResponse) Descriptor() ([]byte, []int) {
 	return file_logs_v1_logs_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *LogStreamResponse) GetMessage() string {
+func (x *LogStreamResponse) GetMessage() []byte {
 	if x != nil {
 		return x.Message
 	}
-	return ""
+	return nil
 }
 
 var File_logs_v1_logs_proto protoreflect.FileDescriptor
@@ -117,7 +117,7 @@ const file_logs_v1_logs_proto_rawDesc = "" +
 	"\x10LogStreamRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"-\n" +
 	"\x11LogStreamResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2U\n" +
+	"\amessage\x18\x01 \x01(\fR\amessage2U\n" +
 	"\rLoggerService\x12D\n" +
 	"\tLogStream\x12\x19.logs.v1.LogStreamRequest\x1a\x1a.logs.v1.LogStreamResponse0\x01B\x8d\x01\n" +
 	"\vcom.logs.v1B\tLogsProtoP\x01Z6github.com/plasma-containers/plasma/gen/logs/v1;logsv1\xa2\x02\x03LXX\xaa\x02\aLogs.V1\xca\x02\aLogs\\V1\xe2\x02\x13Logs\\V1\\GPBMetadata\xea\x02\bLogs::V1b\x06proto3"

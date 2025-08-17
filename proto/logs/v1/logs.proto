@@ -13,5 +13,5 @@ message LogStreamRequest {
 }
 
 message LogStreamResponse {
-  string message = 1;
+  bytes message = 1;
 }
