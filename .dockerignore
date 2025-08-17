@@ -9,3 +9,7 @@ docker-compose*
 tmp/
 Taskfile.yml
 plasma
+buf.*.yaml
+*.md
+.chglog/
+.vscode/
