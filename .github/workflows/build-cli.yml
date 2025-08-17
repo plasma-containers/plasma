@@ -45,9 +45,9 @@ jobs:
     - name: Build
       run: |
         mkdir -p dist &&
-        GOOS=linux GOARCH=amd64 go build -o dist/plasma-linux-amd64 -v ./... &&
-        GOOS=windows GOARCH=amd64 go build -o dist/plasma-windows-amd64 -v ./... &&
-        GOOS=darwin GOARCH=amd64 go build -o dist/plasma-darwin-amd64 -v ./...
+        GOOS=linux GOARCH=amd64 go build -o dist/plasma-linux-amd64 -v main.go &&
+        GOOS=windows GOARCH=amd64 go build -o dist/plasma-windows-amd64 -v main.go &&
+        GOOS=darwin GOARCH=amd64 go build -o dist/plasma-darwin-amd64 -v main.go
 
     - name: Create GitHub Release
       id: create_release
