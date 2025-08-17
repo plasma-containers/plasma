@@ -1,4 +1,12 @@
 
+<a name="v0.5.0"></a>
+## [v0.5.0](https://github.com/plasma-containers/plasma/compare/v0.4.0...v0.5.0) (2025-08-17)
+
+### Feat
+
+* **core:** Add workflow to build and publish plasma cli
+
+
 <a name="v0.4.0"></a>
 ## [v0.4.0](https://github.com/plasma-containers/plasma/compare/v0.3.0...v0.4.0) (2025-08-17)
 
