@@ -1,4 +1,12 @@
 
+<a name="v0.6.1"></a>
+## [v0.6.1](https://github.com/plasma-containers/plasma/compare/v0.6.0...v0.6.1) (2025-08-17)
+
+### Fix
+
+* **core:** allow docker build job to push images
+
+
 <a name="v0.6.0"></a>
 ## [v0.6.0](https://github.com/plasma-containers/plasma/compare/v0.5.0...v0.6.0) (2025-08-17)
 
