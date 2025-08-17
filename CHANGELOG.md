@@ -1,4 +1,14 @@
 
+<a name="v0.6.0"></a>
+## [v0.6.0](https://github.com/plasma-containers/plasma/compare/v0.5.0...v0.6.0) (2025-08-17)
+
+### Feat
+
+* **cli:** on 'plasma serve' fetch corresponding image from github
+* **cli:** if 'develop' version.Version, build plasma-server locally on 'plasma serve'
+* **core:** add building and pushing plasma-server docker image to github
+
+
 <a name="v0.5.0"></a>
 ## [v0.5.0](https://github.com/plasma-containers/plasma/compare/v0.4.0...v0.5.0) (2025-08-17)
 
