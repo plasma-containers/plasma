@@ -96,3 +96,8 @@ tasks:
     cmds:
     - git tag -a "{{.TAG}}" -m "version {{.TAG}}"
     - git-chglog --output=CHANGELOG.md
+
+  debug:grpcui:
+    desc: Run grpcui
+    cmds:
+      - grpcui -plaintext localhost:8081
