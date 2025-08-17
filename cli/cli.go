@@ -38,6 +38,9 @@ const usage = `Usage:
 
   plasma destroy
   - destroys plasma-server ran using 'plasma serve'
+
+  plasma logs <container-name>
+  - streams logs from plasma-server through gRPC
 `
 
 const wrongOrMissingParameters = "\nWrong or missing command parameters, check usage"
@@ -108,7 +111,6 @@ func reqDo(method string, url string, qp *QueryParams) (*server.RespMsg, int, er
 
 func Run() {
 	createCmd := flag.NewFlagSet("create", flag.ExitOnError)
-	logsCmd := flag.NewFlagSet("logs", flag.ExitOnError)
 	initHttpClient()
 	initBaseURL()
 	if len(os.Args) < 2 {
@@ -294,9 +296,13 @@ func Run() {
 			os.Exit(1)
 		}
 	case "logs":
-		ctrName := logsCmd.String("n", "", "container name to get logs from")
-		logsCmd.Parse(os.Args[2:])
-		if *ctrName == "" {
+		if len(os.Args) < 3 {
+			color.Magenta(usage)
+			color.Red(wrongOrMissingParameters)
+			os.Exit(1)
+		}
+		ctrName := os.Args[2]
+		if ctrName == "" {
 			color.Magenta(usage)
 			color.Red(wrongOrMissingParameters)
 			os.Exit(1)
@@ -307,7 +313,7 @@ func Run() {
 		)
 		ctx := context.Background()
 		stream, err := grpcClient.LogStream(ctx, connect.NewRequest(&logsv1.LogStreamRequest{
-			Name: *ctrName,
+			Name: ctrName,
 		}))
 		if err != nil {
 			color.Red(err.Error())
