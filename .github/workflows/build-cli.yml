@@ -1,0 +1,62 @@
+name: Build and publish CLI
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Determine tag
+      id: get_tag
+      run: |
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          # Get latest tag
+          TAG=$(git describe --tags --abbrev=0)
+        else
+          # Use the tag from the push
+          TAG=${GITHUB_REF#refs/tags/}
+        fi
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+    - name: Set up Go ver. 1.24.6
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.24.6'
+        cache-dependency-path: ./go.sum
+
+    - name: Install dependencies
+      run: go mod download
+
+    - name: Test
+      run: go test -v ./...
+
+    - name: Build
+      run: |
+        mkdir -p dist &&
+        GOOS=linux GOARCH=amd64 go build -o dist/plasma-linux-amd64 -v ./... &&
+        GOOS=windows GOARCH=amd64 go build -o dist/plasma-windows-amd64 -v ./... &&
+        GOOS=darwin GOARCH=amd64 go build -o dist/plasma-darwin-amd64 -v ./...
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: Release ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+        files: dist/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
