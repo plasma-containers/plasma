@@ -1,4 +1,14 @@
 
+<a name="v0.4.0"></a>
+## [v0.4.0](https://github.com/plasma-containers/plasma/compare/v0.3.0...v0.4.0) (2025-08-17)
+
+### Feat
+
+* **cli:** add 'logs' command to stream logs from gRPC
+* **core:** run gRPC server to stream container logs
+* **grpc:** run streaming logs service
+
+
 <a name="v0.3.0"></a>
 ## [v0.3.0](https://github.com/plasma-containers/plasma/compare/v0.2.0...v0.3.0) (2025-08-16)
 
