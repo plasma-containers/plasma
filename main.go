@@ -9,6 +9,7 @@ import (
 	"github.com/plasma-containers/plasma/db"
 	grpcserver "github.com/plasma-containers/plasma/grpc_server"
 	"github.com/plasma-containers/plasma/server"
+	"github.com/plasma-containers/plasma/version"
 )
 
 func main() {
@@ -16,6 +17,7 @@ func main() {
 		cli.Run()
 	} else {
 		log.SetFlags(log.LstdFlags | log.Lshortfile)
+		log.Println("Plasma version:", version.Version)
 		go server.Run()
 		for {
 			if db.DB != nil {
