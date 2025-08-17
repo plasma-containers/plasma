@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	_ "embed"
@@ -14,6 +15,7 @@ import (
 	"os/exec"
 	"strings"
 	"text/tabwriter"
+	"text/template"
 	"time"
 
 	"connectrpc.com/connect"
@@ -22,6 +24,7 @@ import (
 	logsv1 "github.com/plasma-containers/plasma/gen/logs/v1"
 	"github.com/plasma-containers/plasma/gen/logs/v1/logsv1connect"
 	"github.com/plasma-containers/plasma/server"
+	"github.com/plasma-containers/plasma/version"
 )
 
 const usage = `Usage:
@@ -51,9 +54,16 @@ var client *http.Client
 //go:embed plasma-compose.yml
 var plasmaCompose string
 
+//go:embed plasma-compose.dev.yml
+var plasmaComposeDev string
+
 type QueryParams struct {
 	Compose *string `json:"compose"`
 	Project *string `json:"project"`
+}
+
+type verTpl struct {
+	Version string
 }
 
 func IsCLI() bool {
@@ -107,6 +117,26 @@ func reqDo(method string, url string, qp *QueryParams) (*server.RespMsg, int, er
 		return &server.RespMsg{}, 0, err
 	}
 	return &msg, resp.StatusCode, nil
+}
+
+func composeDevOrTaggedVer() string {
+	if version.Version == "develop" {
+		color.Yellow("Using development compose file with build: .\n")
+		return plasmaComposeDev
+	}
+	ver := verTpl{Version: version.Version}
+	tpl, err := template.New("compose").Parse(plasmaCompose)
+	if err != nil {
+		color.Red(err.Error())
+		os.Exit(1)
+	}
+	var b bytes.Buffer
+	err = tpl.Execute(&b, ver)
+	if err != nil {
+		color.Red(err.Error())
+		os.Exit(1)
+	}
+	return b.String()
 }
 
 func Run() {
@@ -253,7 +283,7 @@ func Run() {
 		}
 	case "serve":
 		color.Magenta("Deploying plasma...\n")
-		err := os.WriteFile("docker-compose.plasma.yml", []byte(plasmaCompose), 0644)
+		err := os.WriteFile("docker-compose.plasma.yml", []byte(composeDevOrTaggedVer()), 0644)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
@@ -278,7 +308,7 @@ func Run() {
 		}
 	case "destroy":
 		color.Magenta("Destroying local plasma...\n")
-		err := os.WriteFile("docker-compose.plasma.yml", []byte(plasmaCompose), 0644)
+		err := os.WriteFile("docker-compose.plasma.yml", []byte(composeDevOrTaggedVer()), 0644)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
