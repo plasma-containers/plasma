@@ -1,13 +1,15 @@
 package grpcserver
 
 import (
+	"bufio"
+	"bytes"
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 
 	connect "connectrpc.com/connect"
 	"connectrpc.com/grpcreflect"
+	"github.com/plasma-containers/plasma/container"
 	logsv1 "github.com/plasma-containers/plasma/gen/logs/v1"
 	"github.com/plasma-containers/plasma/gen/logs/v1/logsv1connect"
 	"golang.org/x/net/http2"
@@ -28,12 +30,40 @@ func (s *loggerServiceServer) LogStream(
 ) error {
 	name := req.Msg.GetName()
 	log.Printf("Got a request for logs from container %s", name)
-	for i := 1; i <= 5; i++ {
+	c := make(chan container.LogResult, 1)
+	buffer := bytes.Buffer{}
+	scanner := bufio.NewScanner(&buffer)
+	go container.GoLogs(name, c)
+	for result := range c {
+		// if channel returns error
+		if result.Err != nil {
+			if errSend := stream.Send(&logsv1.LogStreamResponse{
+				Message: []byte(result.Err.Error())}); errSend != nil {
+				return errSend
+			}
+		}
+		// if channel returns log data
+		buffer.Write(result.Value)
+		// if log line did not end yet
+		if !bytes.Contains(result.Value, []byte{'\n'}) {
+			continue
+		}
+		if scanner.Scan() {
+			if err := stream.Send(&logsv1.LogStreamResponse{
+				Message: scanner.Bytes()}); err != nil {
+				return err
+			}
+		}
+	}
+	// read rest of log lines if any
+	for scanner.Scan() {
+		log.Println("Sending some remaining log line from", name)
 		if err := stream.Send(&logsv1.LogStreamResponse{
-			Message: fmt.Sprintf("Message %d", i)}); err != nil {
+			Message: scanner.Bytes()}); err != nil {
 			return err
 		}
 	}
+	log.Println("Done sending logs from", name)
 	return nil
 }
 
