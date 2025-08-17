@@ -16,8 +16,7 @@ import (
 	"golang.org/x/net/http2/h2c"
 )
 
-// TODO: configure address and/or port
-const address = "localhost:8081"
+const address = "0.0.0.0:8081"
 
 type loggerServiceServer struct {
 	logsv1connect.UnimplementedLoggerServiceHandler
