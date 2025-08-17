@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
+	"io"
 	"log"
 	"os"
 	"slices"
@@ -22,6 +24,11 @@ import (
 )
 
 var Docker *dcr.Client
+
+type LogResult struct {
+	Value []byte
+	Err   error
+}
 
 func Init() error {
 	var err error
@@ -273,4 +280,46 @@ func Kill(ctrID string) error {
 		return err
 	}
 	return nil
+}
+
+func GoLogs(ctrName string, c chan LogResult) {
+	ctx := context.Background()
+	ctr, err := Get(ctrName)
+	if err != nil {
+		c <- LogResult{Err: err}
+		close(c)
+		return
+	}
+	if ctr == nil {
+		c <- LogResult{Err: errors.New("container not found")}
+		close(c)
+		return
+	}
+	rc, err := Docker.ContainerLogs(
+		ctx,
+		ctr.ID,
+		container.LogsOptions{ShowStdout: true, ShowStderr: true, Timestamps: true},
+	)
+	if err != nil {
+		log.Println(err)
+		c <- LogResult{Err: err}
+		close(c)
+		return
+	}
+	defer rc.Close()
+	for {
+		buf := make([]byte, 32)
+		n, err := rc.Read(buf)
+		if err != nil && err != io.EOF {
+			log.Println(err)
+			c <- LogResult{Err: err}
+			close(c)
+			return
+		}
+		if n == 0 {
+			break
+		}
+		c <- LogResult{Value: buf[:n]}
+	}
+	close(c)
 }
