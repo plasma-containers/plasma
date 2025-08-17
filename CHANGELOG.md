@@ -1,4 +1,12 @@
 
+<a name="v0.6.2"></a>
+## [v0.6.2](https://github.com/plasma-containers/plasma/compare/v0.6.1...v0.6.2) (2025-08-17)
+
+### Fix
+
+* **core:** change build server workflow to run on tag
+
+
 <a name="v0.6.1"></a>
 ## [v0.6.1](https://github.com/plasma-containers/plasma/compare/v0.6.0...v0.6.1) (2025-08-17)
 
