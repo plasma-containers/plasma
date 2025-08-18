@@ -1,4 +1,17 @@
 
+<a name="v0.7.0"></a>
+## [v0.7.0](https://github.com/pgulb/plasma/compare/v0.6.2...v0.7.0) (2025-08-18)
+
+### Feat
+
+* **core:** more complete Task for tag creation
+* **core:** rename package due to moving to personal repo
+
+### Fix
+
+* **grpc:** add '........<grpc-error> ' to error message returned from grpc logs service to avoid it being cut on the beggining
+
+
 <a name="v0.6.2"></a>
 ## [v0.6.2](https://github.com/pgulb/plasma/compare/v0.6.1...v0.6.2) (2025-08-17)
 
