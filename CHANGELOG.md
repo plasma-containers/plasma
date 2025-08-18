@@ -1,4 +1,12 @@
 
+<a name="v0.9.0"></a>
+## [v0.9.0](https://github.com/pgulb/plasma/compare/v0.8.1...v0.9.0) (2025-08-18)
+
+### Feat
+
+* **core:** build and publish cli binaries also for arm64
+
+
 <a name="v0.8.1"></a>
 ## [v0.8.1](https://github.com/pgulb/plasma/compare/v0.8.0...v0.8.1) (2025-08-18)
 
