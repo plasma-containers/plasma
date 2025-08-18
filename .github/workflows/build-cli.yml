@@ -51,6 +51,9 @@ jobs:
         GOOS=linux GOARCH=amd64 go build -o dist/plasma-linux-amd64 -v main.go &&
         GOOS=windows GOARCH=amd64 go build -o dist/plasma-windows-amd64 -v main.go &&
         GOOS=darwin GOARCH=amd64 go build -o dist/plasma-darwin-amd64 -v main.go
+        GOOS=linux GOARCH=arm64 go build -o dist/plasma-linux-arm64 -v main.go &&
+        GOOS=windows GOARCH=arm64 go build -o dist/plasma-windows-arm64 -v main.go &&
+        GOOS=darwin GOARCH=arm64 go build -o dist/plasma-darwin-arm64 -v main.go
 
     - name: Create GitHub Release
       id: create_release
