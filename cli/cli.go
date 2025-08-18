@@ -378,5 +378,9 @@ func Run() {
 			// https://pkg.go.dev/github.com/docker/docker/client#Client.ContainerLogs
 			fmt.Println(string(stream.Msg().Message[8:]))
 		}
+	default:
+		color.Magenta(usage)
+		color.Red(fmt.Sprintf("unknown command '%s'", os.Args[1]))
+		os.Exit(1)
 	}
 }
