@@ -209,9 +209,19 @@ func servicesFromCompose(input *types.Project, projID uint) ([]*Service, error) 
 		if svc.Volumes != nil {
 			vols := []VolumeInDB{}
 			for _, v := range svc.Volumes {
+				var volSource string
+				if v.Type == "volume" {
+					// input.Name is the name of the project
+					// it assembles something like "test123_nginx_vol"
+					// for proj test123 and volume nginx_vol
+					// without it, it would create a volume called "nginx_vol"
+					volSource = input.Name + "_" + v.Source
+				} else {
+					volSource = v.Source
+				}
 				vols = append(vols, VolumeInDB{
 					Type:   v.Type,
-					Source: v.Source,
+					Source: volSource,
 					Target: v.Target,
 				})
 			}
