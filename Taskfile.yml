@@ -94,8 +94,13 @@ tasks:
   git:tag:
     desc: create new git tag - use TAG variable to set
     cmds:
+    - echo "{{.TAG}}" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'
     - git tag -a "{{.TAG}}" -m "version {{.TAG}}"
     - git-chglog --output=CHANGELOG.md
+    - git add CHANGELOG.md
+    - git commit -m "add changelog for {{.TAG}}"
+    - git push
+    - git push --tags
 
   debug:grpcui:
     desc: Run grpcui
