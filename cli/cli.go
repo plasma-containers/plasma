@@ -142,6 +142,28 @@ func composeDevOrTaggedVer() string {
 	return b.String()
 }
 
+func checkServerVer() {
+	msg, status, err := reqDo("GET", "/version", nil)
+	if err != nil {
+		color.Red(err.Error())
+		os.Exit(1)
+	}
+	if status != 200 {
+		color.Red(msg.Msg)
+		os.Exit(1)
+	}
+	if msg.Msg != version.Version {
+		color.Red(
+			fmt.Sprintf(
+				"CLI version (%s) and server version (%s) must match.\n",
+				version.Version,
+				msg.Msg,
+			),
+		)
+		os.Exit(1)
+	}
+}
+
 func Run() {
 	createCmd := flag.NewFlagSet("create", flag.ExitOnError)
 	initHttpClient()
@@ -153,6 +175,7 @@ func Run() {
 
 	switch os.Args[1] {
 	case "create":
+		checkServerVer()
 		projName := createCmd.String("n", "", "project name to create")
 		composeFile := createCmd.String("c", "docker-compose.yml", "compose file to upload")
 		createCmd.Parse(os.Args[2:])
@@ -190,6 +213,7 @@ func Run() {
 		}
 		color.Magenta(msg.Msg)
 	case "ps":
+		checkServerVer()
 		msg, status, err := reqDo("GET", "/ps", &QueryParams{})
 		if err != nil {
 			color.Magenta(msg.Msg)
@@ -343,6 +367,7 @@ func Run() {
 		}
 		color.Magenta("Plasma removed.")
 	case "logs":
+		checkServerVer()
 		var ctrName string
 		if len(os.Args) > 2 {
 			ctrName = os.Args[2]
