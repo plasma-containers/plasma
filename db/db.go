@@ -98,8 +98,9 @@ func servicesFromCompose(input *types.Project, projID uint) ([]*Service, error) 
 	svcs := []*Service{}
 	for _, svc := range input.Services {
 		newSvc := Service{
-			Name:                     svc.Name, // never empty
-			ProjectId:                projID,   // never empty
+			// Name prefixed with project's name
+			Name:                     input.Name + "_" + svc.Name, // never empty
+			ProjectId:                projID,                      // never empty
 			Command:                  nil,
 			ContainerName:            nil,
 			DependsOn:                nil,
