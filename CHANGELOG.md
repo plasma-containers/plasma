@@ -1,4 +1,12 @@
 
+<a name="v0.9.1"></a>
+## [v0.9.1](https://github.com/pgulb/plasma/compare/v0.9.0...v0.9.1) (2025-08-18)
+
+### Fix
+
+* **core:** add qemu and buildx actions to allow building multiarch docker image
+
+
 <a name="v0.9.0"></a>
 ## [v0.9.0](https://github.com/pgulb/plasma/compare/v0.8.1...v0.9.0) (2025-08-18)
 
