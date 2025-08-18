@@ -31,6 +31,6 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          IMAGE="ghcr.io/plasma-containers/plasma:${GITHUB_REF_NAME}"
+          IMAGE="ghcr.io/pgulb/plasma:${GITHUB_REF_NAME}"
           docker build -t $IMAGE .
           docker push $IMAGE

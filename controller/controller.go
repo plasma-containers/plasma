@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/plasma-containers/plasma/container"
-	"github.com/plasma-containers/plasma/db"
+	"github.com/pgulb/plasma/container"
+	"github.com/pgulb/plasma/db"
 )
 
 func svcLoop(services []db.Service) {

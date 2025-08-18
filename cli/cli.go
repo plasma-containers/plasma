@@ -20,11 +20,11 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/fatih/color"
-	"github.com/plasma-containers/plasma/db"
-	logsv1 "github.com/plasma-containers/plasma/gen/logs/v1"
-	"github.com/plasma-containers/plasma/gen/logs/v1/logsv1connect"
-	"github.com/plasma-containers/plasma/server"
-	"github.com/plasma-containers/plasma/version"
+	"github.com/pgulb/plasma/db"
+	logsv1 "github.com/pgulb/plasma/gen/logs/v1"
+	"github.com/pgulb/plasma/gen/logs/v1/logsv1connect"
+	"github.com/pgulb/plasma/server"
+	"github.com/pgulb/plasma/version"
 )
 
 const usage = `Usage:

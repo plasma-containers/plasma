@@ -20,7 +20,7 @@ import (
 	"github.com/docker/docker/api/types/volume"
 	dcr "github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
-	"github.com/plasma-containers/plasma/db"
+	"github.com/pgulb/plasma/db"
 )
 
 var Docker *dcr.Client

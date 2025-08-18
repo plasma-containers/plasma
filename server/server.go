@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/plasma-containers/plasma/container"
-	"github.com/plasma-containers/plasma/db"
+	"github.com/pgulb/plasma/container"
+	"github.com/pgulb/plasma/db"
 )
 
 type RespMsg struct {

@@ -9,9 +9,9 @@ import (
 
 	connect "connectrpc.com/connect"
 	"connectrpc.com/grpcreflect"
-	"github.com/plasma-containers/plasma/container"
-	logsv1 "github.com/plasma-containers/plasma/gen/logs/v1"
-	"github.com/plasma-containers/plasma/gen/logs/v1/logsv1connect"
+	"github.com/pgulb/plasma/container"
+	logsv1 "github.com/pgulb/plasma/gen/logs/v1"
+	"github.com/pgulb/plasma/gen/logs/v1/logsv1connect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )

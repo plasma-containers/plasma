@@ -1,4 +1,4 @@
-module github.com/plasma-containers/plasma
+module github.com/pgulb/plasma
 
 go 1.24.6
 

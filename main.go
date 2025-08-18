@@ -4,12 +4,12 @@ import (
 	"log"
 	"time"
 
-	"github.com/plasma-containers/plasma/cli"
-	"github.com/plasma-containers/plasma/controller"
-	"github.com/plasma-containers/plasma/db"
-	grpcserver "github.com/plasma-containers/plasma/grpc_server"
-	"github.com/plasma-containers/plasma/server"
-	"github.com/plasma-containers/plasma/version"
+	"github.com/pgulb/plasma/cli"
+	"github.com/pgulb/plasma/controller"
+	"github.com/pgulb/plasma/db"
+	grpcserver "github.com/pgulb/plasma/grpc_server"
+	"github.com/pgulb/plasma/server"
+	"github.com/pgulb/plasma/version"
 )
 
 func main() {

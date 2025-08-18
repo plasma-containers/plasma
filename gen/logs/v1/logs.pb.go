@@ -119,8 +119,8 @@ const file_logs_v1_logs_proto_rawDesc = "" +
 	"\x11LogStreamResponse\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\fR\amessage2U\n" +
 	"\rLoggerService\x12D\n" +
-	"\tLogStream\x12\x19.logs.v1.LogStreamRequest\x1a\x1a.logs.v1.LogStreamResponse0\x01B\x8d\x01\n" +
-	"\vcom.logs.v1B\tLogsProtoP\x01Z6github.com/plasma-containers/plasma/gen/logs/v1;logsv1\xa2\x02\x03LXX\xaa\x02\aLogs.V1\xca\x02\aLogs\\V1\xe2\x02\x13Logs\\V1\\GPBMetadata\xea\x02\bLogs::V1b\x06proto3"
+	"\tLogStream\x12\x19.logs.v1.LogStreamRequest\x1a\x1a.logs.v1.LogStreamResponse0\x01B\x81\x01\n" +
+	"\vcom.logs.v1B\tLogsProtoP\x01Z*github.com/pgulb/plasma/gen/logs/v1;logsv1\xa2\x02\x03LXX\xaa\x02\aLogs.V1\xca\x02\aLogs\\V1\xe2\x02\x13Logs\\V1\\GPBMetadata\xea\x02\bLogs::V1b\x06proto3"
 
 var (
 	file_logs_v1_logs_proto_rawDescOnce sync.Once

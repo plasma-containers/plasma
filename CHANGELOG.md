@@ -1,6 +1,6 @@
 
 <a name="v0.6.2"></a>
-## [v0.6.2](https://github.com/plasma-containers/plasma/compare/v0.6.1...v0.6.2) (2025-08-17)
+## [v0.6.2](https://github.com/pgulb/plasma/compare/v0.6.1...v0.6.2) (2025-08-17)
 
 ### Fix
 
@@ -8,7 +8,7 @@
 
 
 <a name="v0.6.1"></a>
-## [v0.6.1](https://github.com/plasma-containers/plasma/compare/v0.6.0...v0.6.1) (2025-08-17)
+## [v0.6.1](https://github.com/pgulb/plasma/compare/v0.6.0...v0.6.1) (2025-08-17)
 
 ### Fix
 
@@ -16,7 +16,7 @@
 
 
 <a name="v0.6.0"></a>
-## [v0.6.0](https://github.com/plasma-containers/plasma/compare/v0.5.0...v0.6.0) (2025-08-17)
+## [v0.6.0](https://github.com/pgulb/plasma/compare/v0.5.0...v0.6.0) (2025-08-17)
 
 ### Feat
 
@@ -26,7 +26,7 @@
 
 
 <a name="v0.5.0"></a>
-## [v0.5.0](https://github.com/plasma-containers/plasma/compare/v0.4.0...v0.5.0) (2025-08-17)
+## [v0.5.0](https://github.com/pgulb/plasma/compare/v0.4.0...v0.5.0) (2025-08-17)
 
 ### Feat
 
@@ -34,7 +34,7 @@
 
 
 <a name="v0.4.0"></a>
-## [v0.4.0](https://github.com/plasma-containers/plasma/compare/v0.3.0...v0.4.0) (2025-08-17)
+## [v0.4.0](https://github.com/pgulb/plasma/compare/v0.3.0...v0.4.0) (2025-08-17)
 
 ### Feat
 
@@ -44,7 +44,7 @@
 
 
 <a name="v0.3.0"></a>
-## [v0.3.0](https://github.com/plasma-containers/plasma/compare/v0.2.0...v0.3.0) (2025-08-16)
+## [v0.3.0](https://github.com/pgulb/plasma/compare/v0.2.0...v0.3.0) (2025-08-16)
 
 ### Chore
 
@@ -64,7 +64,7 @@
 
 
 <a name="v0.2.0"></a>
-## [v0.2.0](https://github.com/plasma-containers/plasma/compare/v0.1.1...v0.2.0) (2025-08-16)
+## [v0.2.0](https://github.com/pgulb/plasma/compare/v0.1.1...v0.2.0) (2025-08-16)
 
 ### Feat
 
@@ -79,7 +79,7 @@
 
 
 <a name="v0.1.1"></a>
-## [v0.1.1](https://github.com/plasma-containers/plasma/compare/v0.1.0...v0.1.1) (2025-08-15)
+## [v0.1.1](https://github.com/pgulb/plasma/compare/v0.1.0...v0.1.1) (2025-08-15)
 
 ### Chore
 
