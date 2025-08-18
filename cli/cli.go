@@ -43,7 +43,10 @@ const usage = `Usage:
   - destroys plasma-server ran using 'plasma serve'
 
   plasma logs <container-name>
-  - streams logs from plasma-server through gRPC
+  - streams logs from plasma-server for <container-name> through gRPC
+
+  plasma logs
+  - streams logs for plasma-server itself
 `
 
 const wrongOrMissingParameters = "\nWrong or missing command parameters, check usage"
@@ -340,16 +343,16 @@ func Run() {
 		}
 		color.Magenta("Plasma removed.")
 	case "logs":
-		if len(os.Args) < 3 {
-			color.Magenta(usage)
-			color.Red(wrongOrMissingParameters)
-			os.Exit(1)
-		}
-		ctrName := os.Args[2]
-		if ctrName == "" {
-			color.Magenta(usage)
-			color.Red(wrongOrMissingParameters)
-			os.Exit(1)
+		var ctrName string
+		if len(os.Args) > 2 {
+			ctrName = os.Args[2]
+			if ctrName == "" {
+				color.Magenta(usage)
+				color.Red(wrongOrMissingParameters)
+				os.Exit(1)
+			}
+		} else {
+			ctrName = "plasma-server"
 		}
 		grpcClient := logsv1connect.NewLoggerServiceClient(
 			client,
