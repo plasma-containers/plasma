@@ -9,6 +9,7 @@ import (
 
 	"github.com/pgulb/plasma/container"
 	"github.com/pgulb/plasma/db"
+	"github.com/pgulb/plasma/version"
 )
 
 type RespMsg struct {
@@ -112,6 +113,10 @@ func Ps(w http.ResponseWriter, r *http.Request) {
 	w.Write(Msg(string(b)))
 }
 
+func Version(w http.ResponseWriter, r *http.Request) {
+	w.Write(Msg(version.Version))
+}
+
 func Run() {
 	log.Println("oOoOo Starting plasma-server oOoOo")
 
@@ -125,6 +130,7 @@ func Run() {
 	mux.Handle("GET /healthz", LoggerMiddleware(http.HandlerFunc(Health)))
 	mux.Handle("POST /create", LoggerMiddleware(http.HandlerFunc(Create)))
 	mux.Handle("GET /ps", LoggerMiddleware(http.HandlerFunc(Ps)))
+	mux.Handle("GET /version", LoggerMiddleware(http.HandlerFunc(Version)))
 
 	log.Fatal(http.ListenAndServe(":8080", mux))
 }
