@@ -143,7 +143,7 @@ func composeDevOrTaggedVer() string {
 }
 
 func checkServerVer() {
-	msg, status, err := reqDo("GET", "/version", nil)
+	msg, status, err := reqDo("GET", "/version", &QueryParams{})
 	if err != nil {
 		color.Red(err.Error())
 		os.Exit(1)
