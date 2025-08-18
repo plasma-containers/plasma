@@ -283,12 +283,24 @@ func Run() {
 		}
 	case "serve":
 		color.Magenta("Deploying plasma...\n")
-		err := os.WriteFile("docker-compose.plasma.yml", []byte(composeDevOrTaggedVer()), 0644)
+		tempFile, err := os.CreateTemp("", "docker-compose.plasma.*.yml")
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
 		}
-		err = exec.Command("docker", "compose", "-f", "docker-compose.plasma.yml", "up", "--build", "-d").
+		err = os.WriteFile(tempFile.Name(), []byte(composeDevOrTaggedVer()), 0644)
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
+		defer func() {
+			err = os.Remove(tempFile.Name())
+			if err != nil {
+				color.Red(err.Error())
+				os.Exit(1)
+			}
+		}()
+		err = exec.Command("docker", "compose", "-f", tempFile.Name(), "--project-directory", ".", "up", "--build", "-d").
 			Run()
 		if err != nil {
 			color.Red(err.Error())
@@ -301,30 +313,32 @@ func Run() {
 		color.Magenta(
 			"Then use 'plasma ps' to see if it's working.",
 		)
-		err = os.Remove("docker-compose.plasma.yml")
-		if err != nil {
-			color.Red(err.Error())
-			os.Exit(1)
-		}
 	case "destroy":
 		color.Magenta("Destroying local plasma...\n")
-		err := os.WriteFile("docker-compose.plasma.yml", []byte(composeDevOrTaggedVer()), 0644)
+		tempFile, err := os.CreateTemp("", "docker-compose.plasma.*.yml")
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
 		}
-		err = exec.Command("docker", "compose", "-f", "docker-compose.plasma.yml", "down", "-v").
+		err = os.WriteFile(tempFile.Name(), []byte(composeDevOrTaggedVer()), 0644)
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
+		defer func() {
+			err = os.Remove(tempFile.Name())
+			if err != nil {
+				color.Red(err.Error())
+				os.Exit(1)
+			}
+		}()
+		err = exec.Command("docker", "compose", "-f", tempFile.Name(), "--project-directory", ".", "down", "-v").
 			Run()
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
 		}
 		color.Magenta("Plasma removed.")
-		err = os.Remove("docker-compose.plasma.yml")
-		if err != nil {
-			color.Red(err.Error())
-			os.Exit(1)
-		}
 	case "logs":
 		if len(os.Args) < 3 {
 			color.Magenta(usage)
