@@ -1,4 +1,22 @@
 
+<a name="v0.8.0"></a>
+## [v0.8.0](https://github.com/pgulb/plasma/compare/v0.7.0...v0.8.0) (2025-08-18)
+
+### Feat
+
+* **cli:** check if plasma cli and server versions match before requests
+* **cli:** when no container name provided for 'logs' command, get logs for plasma-server
+* **cli:** add common 'help' commands to print usage
+* **cli:** when using 'serve' or 'destroy', create compose file in temp dir instead of '.'
+* **db:** add '<project_name>_' prefix to containers to allow same base names for different projects
+* **server:** return server version.Version at /version
+
+### Fix
+
+* **cli:** show unknown command error message when using non defined command
+* **db:** add prefix '<project_name>_' to mounts of type 'volume', otherwise when containers were created, another volume without project prefix was created
+
+
 <a name="v0.7.0"></a>
 ## [v0.7.0](https://github.com/pgulb/plasma/compare/v0.6.2...v0.7.0) (2025-08-18)
 
