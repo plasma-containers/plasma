@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -36,8 +37,10 @@ func (s *loggerServiceServer) LogStream(
 	for result := range c {
 		// if channel returns error
 		if result.Err != nil {
+			var errWithMark []byte
+			errWithMark = fmt.Appendf(errWithMark, "........<grpc-error> %s\n", result.Err.Error())
 			if errSend := stream.Send(&logsv1.LogStreamResponse{
-				Message: []byte(result.Err.Error())}); errSend != nil {
+				Message: errWithMark}); errSend != nil {
 				return errSend
 			}
 		}
